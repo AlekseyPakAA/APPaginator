@@ -12,10 +12,10 @@ Pod::Spec.new do |s|
   s.summary          = 'APPaginbatoe is a simple way to load and display paginable content.'
   s.homepage         = 'https://github.com/AlekseyPakAA/APPaginator'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'AlekseyPakAA' => 'alexey.pak@umbrella-web.com' }
+  s.author           = { 'AlekseyPakAA' => 'aleksey.pakaa@gmail.com' }
   s.source           = { :git => 'https://github.com/AlekseyPakAA/APPaginator.git', :tag => s.version.to_s }
 
-  s.ios.deployment_target = '12.2'
+  s.ios.deployment_target = '10.3'
 
   s.source_files = 'APPaginator/Classes/**/*'
   s.swift_version = '5.0'
