@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'APPaginator_Example' do
+  pod 'APPaginator', :path => '../'
+
+  target 'APPaginator_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
