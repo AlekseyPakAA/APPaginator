@@ -1,0 +1,6 @@
+framework module APPaginator {
+  umbrella header "APPaginator-umbrella.h"
+
+  export *
+  module * { export * }
+}

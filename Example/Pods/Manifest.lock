@@ -1,0 +1,16 @@
+PODS:
+  - APPaginator (0.1.0)
+
+DEPENDENCIES:
+  - APPaginator (from `../`)
+
+EXTERNAL SOURCES:
+  APPaginator:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  APPaginator: a9a914e2bedede8644a914ed6bf1cff5d8b8df0b
+
+PODFILE CHECKSUM: e2b6261f18b47163ba8de797e8a932d44d884f0b
+
+COCOAPODS: 1.5.3

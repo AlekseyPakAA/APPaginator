@@ -1,0 +1,6 @@
+framework module Pods_APPaginator_Example {
+  umbrella header "Pods-APPaginator_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}
