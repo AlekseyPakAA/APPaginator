@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'APPaginator'
-  s.version          = '0.1.1'
+  s.version          = '0.1.2'
   s.summary          = 'APPaginbatoe is a simple way to load and display paginable content.'
   s.homepage         = 'https://github.com/AlekseyPakAA/APPaginator'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
