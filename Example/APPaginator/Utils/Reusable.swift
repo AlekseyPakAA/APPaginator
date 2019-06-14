@@ -1,9 +1,9 @@
 //
 //  Reusable.swift
-//  Wipon
+//  APPaginator_Example
 //
-//  Created by Alexey Pak on 15/12/2018.
-//  Copyright © 2018 Wipon. All rights reserved.
+//  Created by Alexey Pak on 14/06/2019.
+//  Copyright © 2019 CocoaPods. All rights reserved.
 //
 
 import Foundation

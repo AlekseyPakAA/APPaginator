@@ -1,9 +1,9 @@
 //
 //  AppDelegate.swift
-//  APPaginator
+//  APPaginator_Example
 //
-//  Created by AlekseyPakAA on 06/13/2019.
-//  Copyright (c) 2019 AlekseyPakAA. All rights reserved.
+//  Created by Alexey Pak on 14/06/2019.
+//  Copyright © 2019 CocoaPods. All rights reserved.
 //
 
 import UIKit

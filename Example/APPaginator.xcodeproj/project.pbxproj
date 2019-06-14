@@ -99,10 +99,10 @@
 		43CBE76F22B2E5D700DD6B96 /* CollectionViewCells */ = {
 			isa = PBXGroup;
 			children = (
-				43CBE77022B2E5D700DD6B96 /* ActivityIndicatorCollectionViewCell.xib */,
 				43CBE77322B2E5D700DD6B96 /* ActivityIndicatorCollectionViewCell.swift */,
-				43CBE77222B2E5D700DD6B96 /* ActivityIndicatorLargeCollectionViewCell.xib */,
+				43CBE77022B2E5D700DD6B96 /* ActivityIndicatorCollectionViewCell.xib */,
 				43CBE77122B2E5D700DD6B96 /* ActivityIndicatorLargeCollectionViewCell.swift */,
+				43CBE77222B2E5D700DD6B96 /* ActivityIndicatorLargeCollectionViewCell.xib */,
 				43CBE77422B2E5D700DD6B96 /* ErrorMessageCollectionViewCell.xib */,
 				43CBE77522B2E5D700DD6B96 /* ErrorMessageCollectionViewCell.swift */,
 				43CBE78822B2F15E00DD6B96 /* FakeCollectionViewCell.xib */,
