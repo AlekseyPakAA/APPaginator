@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="formular-about.ttf">
+            <string>Formular</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="xQU-Jj-xUk" customClass="ActivityIndicatorLargeCollectionViewCell" customModule="Wipon" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="275" height="130"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                <rect key="frame" x="0.0" y="0.0" width="275" height="130"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CIJ-81-OSe">
+                        <rect key="frame" x="0.0" y="0.0" width="275" height="130"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="Tla-bQ-NmZ">
+                                <rect key="frame" x="114.5" y="47" width="46.5" height="36.5"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="mxJ-F7-3xK">
+                                        <rect key="frame" x="13" y="0.0" width="20" height="20"/>
+                                        <color key="color" red="0.15686274510000001" green="0.52941176469999995" blue="0.79215686269999996" alpha="1" colorSpace="calibratedRGB"/>
+                                    </activityIndicatorView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loading..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mdh-7T-2LS">
+                                        <rect key="frame" x="0.0" y="24" width="46.5" height="12.5"/>
+                                        <fontDescription key="fontDescription" name="Formular" family="Formular" pointSize="14"/>
+                                        <color key="textColor" red="0.15686274510000001" green="0.52941176469999995" blue="0.79215686269999996" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="Tla-bQ-NmZ" firstAttribute="centerY" secondItem="CIJ-81-OSe" secondAttribute="centerY" id="9Wg-fn-qId"/>
+                            <constraint firstItem="Tla-bQ-NmZ" firstAttribute="centerX" secondItem="CIJ-81-OSe" secondAttribute="centerX" id="OEX-OM-9Xn"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstItem="CIJ-81-OSe" firstAttribute="centerY" secondItem="xQU-Jj-xUk" secondAttribute="centerY" id="4G9-aJ-RsT"/>
+                <constraint firstAttribute="bottom" secondItem="CIJ-81-OSe" secondAttribute="bottom" id="655-gs-4qI"/>
+                <constraint firstItem="CIJ-81-OSe" firstAttribute="leading" secondItem="xQU-Jj-xUk" secondAttribute="leading" id="8NF-qr-7eR"/>
+                <constraint firstAttribute="trailing" secondItem="CIJ-81-OSe" secondAttribute="trailing" id="9bj-Zn-hcA"/>
+                <constraint firstItem="CIJ-81-OSe" firstAttribute="top" secondItem="xQU-Jj-xUk" secondAttribute="top" id="BrW-dX-pxZ"/>
+                <constraint firstItem="CIJ-81-OSe" firstAttribute="centerX" secondItem="xQU-Jj-xUk" secondAttribute="centerX" id="miC-gw-NRH"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="jTp-W8-ymE"/>
+            <size key="customSize" width="275" height="130"/>
+            <connections>
+                <outlet property="activityIndicator" destination="mxJ-F7-3xK" id="Mvx-CQ-QzE"/>
+            </connections>
+            <point key="canvasLocation" x="292" y="83"/>
+        </collectionViewCell>
+    </objects>
+</document>

@@ -2,10 +2,9 @@ use_frameworks!
 
 target 'APPaginator_Example' do
   pod 'APPaginator', :path => '../'
+  pod 'Moya', '~> 13.0'
 
   target 'APPaginator_Tests' do
     inherit! :search_paths
-
-    
   end
 end
