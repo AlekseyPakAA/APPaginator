@@ -12,7 +12,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="2jp-zZ-10O" customClass="RepositoryCollectionViewCell" customModule="APPaginator_Example" customModuleProvider="target">
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="2jp-zZ-10O" customClass="FakeCollectionViewCell" customModule="APPaginator_Example" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="345" height="50"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
@@ -34,6 +34,9 @@
             </constraints>
             <viewLayoutGuide key="safeArea" id="0OE-Jx-nhO"/>
             <size key="customSize" width="345" height="50"/>
+            <connections>
+                <outlet property="titleLabel" destination="EQM-3P-nv3" id="bck-62-oAI"/>
+            </connections>
             <point key="canvasLocation" x="80.434782608695656" y="24.776785714285712"/>
         </collectionViewCell>
     </objects>

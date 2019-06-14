@@ -111,7 +111,11 @@ public class Paginator<Delegate: PaginatorDelegate> {
 		case .dataProgress:
 			state = .dataError
 		case .refresh:
-			break
+			if items.isEmpty {
+				state = .emptyData
+			} else {
+				state = .data
+			}
 		}
 	}
 

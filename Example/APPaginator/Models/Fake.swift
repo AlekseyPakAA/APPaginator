@@ -1,5 +1,5 @@
 //
-//  Repository.swift
+//  Fake.swift
 //  APPaginator_Example
 //
 //  Created by Alexey Pak on 13/06/2019.
@@ -8,7 +8,9 @@
 
 import Foundation
 
-struct Repository {
+struct Fake {
 
+	let id: Int
+	let name: String
 
 }

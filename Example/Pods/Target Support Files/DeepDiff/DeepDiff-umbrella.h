@@ -11,6 +11,6 @@
 #endif
 
 
-FOUNDATION_EXPORT double Pods_APPaginator_TestsVersionNumber;
-FOUNDATION_EXPORT const unsigned char Pods_APPaginator_TestsVersionString[];
+FOUNDATION_EXPORT double DeepDiffVersionNumber;
+FOUNDATION_EXPORT const unsigned char DeepDiffVersionString[];
 
