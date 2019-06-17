@@ -58,7 +58,7 @@ public class Paginator<Delegate: PaginatorDelegate> {
 		switch state {
 		case .empty, .emptyError, .emptyData:
 			loadData(at: firstPage)
-			state = .emptyProgress
+			state = .refresh
 		case .emptyProgress, .refresh:
 			break
 		case .data, .dataProgress, .dataAll, .dataError:
@@ -120,7 +120,7 @@ public class Paginator<Delegate: PaginatorDelegate> {
 			state = .dataError
 		case .refresh:
 			if items.isEmpty {
-				state = .emptyData
+				state = .emptyError
 			} else {
 				state = .data
 			}

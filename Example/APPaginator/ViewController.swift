@@ -105,19 +105,19 @@ private extension ViewController {
 		collectionView?.register(ActivityIndicatorLargeCollectionViewCell.self)
 		collectionView?.register(ErrorMessageCollectionViewCell.self)
 		collectionView?.register(FakeCollectionViewCell.self)
-
+		collectionView?.register(EmptyCollectionViewCell.self)
 		collectionView?.delegate = self
 
 		let refreshControl = UIRefreshControl()
 		refreshControl.addTarget(
 			self,
-			action: #selector(refreshWeatherData(_:)),
+			action: #selector(refreshData(_:)),
 			for: .valueChanged
 		)
 		collectionView?.refreshControl = refreshControl
 	}
 
-	@objc private func refreshWeatherData(_ sender: UIRefreshControl) {
+	@objc private func refreshData(_ sender: UIRefreshControl) {
 		paginator.apply(command: .refresh)
 	}
 
@@ -175,15 +175,17 @@ extension ViewController: PaginatorDelegate {
 			newItems = [.errorMessageLarge]
 		case .emptyData:
 			newItems = []
-		case .data, .dataAll, .refresh:
+		case .data, .dataAll:
 			newItems = items.map { .fake(model: $0) }
+		case .refresh:
+			newItems = self.items
 		case .dataProgress:
 			newItems = items.map { .fake(model: $0) } + [.activityIndicator]
 		case .dataError:
 			newItems = items.map { .fake(model: $0) } + [.errorMessage]
 		}
 
-		if state != .refresh {
+		if state != .refresh && (collectionView?.refreshControl?.isRefreshing ?? false) {
 			collectionView?.refreshControl?.endRefreshing()
 		}
 
@@ -211,7 +213,7 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
 		case .activityIndicatorLarge, .errorMessageLarge:
 			break
 		case .errorMessage, .fake, .activityIndicator:
-			size.height = 68.0
+			size.height = 100.0
 		}
 
 		return size
