@@ -42,14 +42,14 @@ final class ViewController: UICollectionViewController {
 	}
 
 	private var items: [Item] = []
-	private let paginator = Paginator<ViewController>()
+	private let paginator = Paginator<Fake>()
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		setup()
 
-		paginator.apply(command: .loadNextPage)
+		paginator.loadNextPage()
 	}
 
 	override func collectionView(
@@ -118,11 +118,56 @@ private extension ViewController {
 	}
 
 	@objc private func refreshData(_ sender: UIRefreshControl) {
-		paginator.apply(command: .refresh)
+		paginator.refresh()
 	}
 
 	func setupPaginator() {
-		 paginator.delegate = self
+
+        paginator.requestClosure = { page, resultClosure in
+            return FakeAPI.shared.fakes(at: page) {
+                switch $0 {
+                case .success(let data):
+                    resultClosure(.success((data.lastPage, Items: data.data)))
+                case .failure(let error):
+                    resultClosure(.failure(error))
+                }
+            }
+        }
+
+        paginator.stateChangeClosure = { items, state in
+            let newItems: [Item]
+
+            switch state {
+            case .empty:
+                newItems = []
+            case .emptyProgress:
+                newItems = [.activityIndicatorLarge]
+            case .emptyError:
+                newItems = [.errorMessageLarge]
+            case .emptyData:
+                newItems = []
+            case .dataAll:
+                newItems = items.map { .fake(model: $0) }
+            case .refresh:
+                newItems = self.items
+            case .data, .dataProgress:
+                newItems = items.map { .fake(model: $0) } + [.activityIndicator]
+            case .dataError:
+                newItems = items.map { .fake(model: $0) } + [.errorMessage]
+            }
+
+            let isRefreshing = self.collectionView?.refreshControl?.isRefreshing ?? false
+            if case .refresh = state {
+                //do nothing
+            } else if isRefreshing {
+                self.collectionView?.refreshControl?.endRefreshing()
+            }
+
+            let changes = diff(old: self.items, new: newItems)
+            self.collectionView?.reload(changes: changes, updateData: {
+                self.items = newItems
+            })
+        }
 	}
 
 	@IBAction func didTouchToggleInternetButton(sender: UIBarButtonItem) {
@@ -133,66 +178,6 @@ private extension ViewController {
 			FakeAPI.internetIsON = true
 			sender.title = "Internet OFF"
 		}
-	}
-
-}
-
-extension ViewController: PaginatorDelegate {
-
-	typealias ItemType = Fake
-
-	func paginator(
-		_ paginator: Paginator<ViewController>,
-		itemsAtPage page: Int,
-		resultBlock: @escaping ((Int, [Fake]) -> Void),
-		errorBlock: @escaping ((Error) -> Void)
-	) -> Cancelable {
-		return FakeAPI.shared.fakes(at: page) {
-			switch $0 {
-			case .success(let data):
-				resultBlock(data.lastPage, data.data)
-			case .failure(let error):
-				errorBlock(error)
-			}
-		}
-	}
-
-	func paginator(
-		_ paginator: Paginator<ViewController>,
-		didChangeState state: PaginatorState,
-		items: [Fake]
-	) {
-		let newItems: [Item]
-
-		print(paginator.state)
-
-		switch state {
-		case .empty:
-			newItems = []
-		case .emptyProgress:
-			newItems = [.activityIndicatorLarge]
-		case .emptyError:
-			newItems = [.errorMessageLarge]
-		case .emptyData:
-			newItems = []
-		case .data, .dataAll:
-			newItems = items.map { .fake(model: $0) }
-		case .refresh:
-			newItems = self.items
-		case .dataProgress:
-			newItems = items.map { .fake(model: $0) } + [.activityIndicator]
-		case .dataError:
-			newItems = items.map { .fake(model: $0) } + [.errorMessage]
-		}
-
-		if state != .refresh && (collectionView?.refreshControl?.isRefreshing ?? false) {
-			collectionView?.refreshControl?.endRefreshing()
-		}
-
-		let changes = diff(old: self.items, new: newItems)
-		collectionView?.reload(changes: changes, updateData: {
-			self.items = newItems
-		})
 	}
 
 }
@@ -226,7 +211,7 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
 			let normalizedContentOffset = scrollView.contentOffset.y + scrollView.frame.height - bottomLayoutGuide.length
 
 			if normalizedContentOffset >= scrollView.contentSize.height - visibleAreaHeight {
-				paginator.apply(command: .loadNextPage)
+				paginator.loadNextPage()
 			}
 		default:
 			break
@@ -238,7 +223,7 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
 extension ViewController: ErrorMessageCollectionViewCellDelegate {
 
 	func didTouchTryAgainButton(sender: ErrorMessageCollectionViewCell) {
-		paginator.apply(command: .loadNextPage)
+		paginator.loadNextPage()
 	}
 
 }

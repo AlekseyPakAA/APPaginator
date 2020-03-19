@@ -8,6 +8,10 @@
 
 import APPaginator
 
+enum FakeAPIError: Error {
+    case noInternetConnectionError
+}
+
 class FakeAPI {
 
 	static let shared = FakeAPI()
@@ -20,12 +24,12 @@ class FakeAPI {
 
 		let ping = Double.random(in: 1.0...3.0).rounded()
 		DispatchQueue.main.asyncAfter(deadline: .now() + ping, execute: {
-			guard !reqest.canceled else {
+			guard !reqest.isCancelled else {
 				return
 			}
 
 			guard FakeAPI.internetIsON else {
-				handler(.failure(error: NSError()))
+                handler(.failure(error: FakeAPIError.noInternetConnectionError))
 				return
 			}
 
@@ -47,12 +51,12 @@ enum Result<T> {
 	case success(data: T), failure(error: Error)
 }
 
-class Request: Cancelable {
+class Request: Cancellable {
 
-	fileprivate var canceled: Bool = false
+    private(set) var isCancelled: Bool = false
 
-	func cancel() {
-		canceled = true
+    func cancel() {
+		isCancelled = true
 	}
 
 }

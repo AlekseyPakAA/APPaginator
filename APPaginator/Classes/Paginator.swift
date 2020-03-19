@@ -8,158 +8,138 @@
 
 import Foundation
 
-public class Paginator<Delegate: PaginatorDelegate> {
+public class Paginator<ItemType> {
 
-	private let firstPage = 0
-	private var loadedPages: Int = 0
-	private var lastPage: Int = Int.max
+    public typealias RequestClosure = (_ page: Int, @escaping RequestResultClosure) -> Cancellable
+    public typealias RequestResultClosure = (Result<(lastPage: Int, Items: [ItemType]), Error>) -> Void
+    public typealias StateChangeClosure = (_ items: [ItemType] ,_ state: PaginatorState) -> Void
 
-	public private(set) var state: PaginatorState = .empty {
-		didSet {
-			delegate?.paginator(self, didChangeState: state, items: items)
-		}
-	}
-	public private(set) var items: [Delegate.ItemType] = []
+    private let firstPage: Int
+    private var loadedPages: Int = 0
+    private var lastPage: Int = Int.max
 
-	private var request: Cancelable?
+    public private(set) var state: PaginatorState = .empty {
+        didSet { stateChangeClosure?(items, state) }
+    }
+    private(set) var items: [ItemType] = []
 
-	public weak var delegate: Delegate?
+    private var request: Cancellable?
 
-	public init() { }
+    public var requestClosure: RequestClosure?
+    public var stateChangeClosure: StateChangeClosure?
 
-	private func loadData(at page: Int) {
-		request?.cancel()
-		request = delegate?.paginator(
-			self,
-			itemsAtPage: page,
-			resultBlock: { [weak self] lastPage, data in
-				self?.lastPage = lastPage
-				self?.didLoadNewData(data)
-			}, errorBlock: { [weak self] error in
-				self?.didFailFetchData(error)
-			}
-		)
-	}
+    public init(startsFromPage page: Int = 1) {
+        self.firstPage = page
+    }
 
-	public func apply(command: PaginatorCommand) {
-		if delegate == nil {
-			return
-		}
+    public func refresh(_ force: Bool = false) {
+        switch state {
+        case .empty, .emptyError, .emptyData:
+            loadData(at: firstPage)
+            state = .refresh
+        case .emptyProgress, .refresh:
+            if force {
+                loadData(at: firstPage)
+                state = .refresh
+            }
+        case .data, .dataProgress, .dataAll, .dataError:
+            loadData(at: firstPage)
+            state = .refresh
+        }
+    }
 
-		switch command {
-		case .refresh:
-			refresh()
-		case .loadNextPage:
-			loadNextPage()
-		}
-	}
+    public func loadNextPage() {
+        switch state {
+        case .emptyError, .empty:
+            loadData(at: firstPage)
+            state = .emptyProgress
+        case .emptyProgress, .emptyData:
+            break
+        case .data, .dataError:
+            loadData(at: loadedPages + 1)
+            state = .dataProgress
+        case .dataProgress, .dataAll, .refresh:
+            break
+        }
+    }
 
-	private func refresh() {
-		switch state {
-		case .empty, .emptyError, .emptyData:
-			loadData(at: firstPage)
-			state = .refresh
-		case .emptyProgress, .refresh:
-			break
-		case .data, .dataProgress, .dataAll, .dataError:
-			loadData(at: firstPage)
-			state = .refresh
-		}
-	}
+    private func loadData(at page: Int) {
+        request?.cancel()
 
-	private func loadNextPage() {
-		switch state {
-		case .emptyError, .empty:
-			loadData(at: firstPage)
-			state = .emptyProgress
-		case .emptyProgress, .emptyData:
-			break
-		case .data, .dataError:
-			loadData(at: loadedPages + 1)
-			state = .dataProgress
-		case .dataProgress, .dataAll, .refresh:
-			break
-		}
-	}
+        var request: Cancellable?
+        request = requestClosure?(page) { [weak self] result in
+            guard !(request?.isCancelled ?? false) else {
+                return
+            }
 
-	private func didLoadNewData(_ data: [Delegate.ItemType]) {
-		switch state {
-		case .empty, .emptyError, .emptyData, .data, .dataAll, .dataError:
-			break
-		case .emptyProgress, .dataProgress:
-			loadedPages += 1
+            switch result {
+            case .success(let lastPage, let data):
+                self?.lastPage = lastPage
+                self?.didLoadNewData(data)
+            case .failure(let error):
+                self?.didFailFetchData(error)
+            }
+        }
 
-			if data.isEmpty || loadedPages == lastPage {
-				items.append(contentsOf: data)
-				state = .dataAll
-			} else {
-				items.append(contentsOf: data)
-				state = .data
-			}
-		case .refresh:
-			if data.isEmpty {
-				state = .emptyData
-			} else {
-				loadedPages = firstPage + 1
-				items.removeAll()
-				items.append(contentsOf: data)
-				state = .data
-			}
-		}
-	}
+        self.request = request
+    }
 
-	private func didFailFetchData(_ error: Error) {
-		switch state {
-		case .empty, .emptyError, .emptyData:
-			break
-		case .emptyProgress:
-			state = .emptyError
-		case .data, .dataAll, .dataError:
-			break
-		case .dataProgress:
-			state = .dataError
-		case .refresh:
-			if items.isEmpty {
-				state = .emptyError
-			} else {
-				state = .data
-			}
-		}
-	}
+    private func didLoadNewData(_ data: [ItemType]) {
+        switch state {
+        case .empty, .emptyError, .emptyData, .data, .dataAll, .dataError:
+            break
+        case .emptyProgress, .dataProgress:
+            items.append(contentsOf: data)
+            loadedPages += 1
 
-}
+            if data.isEmpty || loadedPages == lastPage {
+                state = .dataAll
+            } else {
+                state = .data
+            }
+        case .refresh:
+            loadedPages = firstPage
+            items.removeAll()
+            items.append(contentsOf: data)
 
-public enum PaginatorCommand {
-	case refresh, loadNextPage
+            if data.isEmpty {
+                state = .emptyData
+            } else {
+                state = .data
+            }
+        }
+    }
+
+    private func didFailFetchData(_ error: Error) {
+        switch state {
+        case .empty, .emptyError, .emptyData:
+            break
+        case .emptyProgress:
+            state = .emptyError(error: error)
+        case .data, .dataAll, .dataError:
+            break
+        case .dataProgress:
+            state = .dataError(error: error)
+        case .refresh:
+            if items.isEmpty {
+                state = .emptyError(error: error)
+            } else {
+                state = .data
+            }
+        }
+    }
+
 }
 
 public enum PaginatorState {
-	case empty, emptyProgress, emptyError, emptyData
-	case data, dataProgress, dataError, dataAll
-	case refresh
+    case empty, emptyProgress, emptyError(error: Error), emptyData
+    case data, dataProgress, dataError(error: Error), dataAll
+    case refresh
 }
 
-public protocol PaginatorDelegate: class {
+public protocol Cancellable {
 
-	associatedtype ItemType
-
-	func paginator(
-		_ paginator: Paginator<Self>,
-		itemsAtPage page: Int,
-		resultBlock: @escaping ((_ lastPage: Int, _ items: [ItemType]) -> Void),
-		errorBlock: @escaping ((Error) -> Void)
-	) -> Cancelable
-
-	func paginator(
-		_ paginator: Paginator<Self>,
-		didChangeState state: PaginatorState,
-		items: [ItemType]
-	)
-
-}
-
-public protocol Cancelable {
-
-	func cancel()
+    var isCancelled: Bool { get }
+    func cancel()
 
 }
